@@ -5,7 +5,7 @@ THIS IS THE REPO OF FRONTEND (REHBAR) DEVELOPER AND BACKEND DEVELOPER TRIES TO I
 1. **Clone the repository:**
 
    ```cmd
-   git clone https://github.com/Fareed95/Aryan-news-.git](https://github.com/Fareed95/RANDOM.git
+   git clone https://github.com/Fareed95/RANDOM.git
 2. **Pull the repository**
 
    ```cmd
