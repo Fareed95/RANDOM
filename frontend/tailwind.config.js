@@ -17,9 +17,6 @@ module.exports = {
       },
     },
     extend: {
-      // fontfamily: {
-      //   sans: ["var(--font-sans)", ...fontFamily.sans],
-      // },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -53,7 +50,6 @@ module.exports = {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
-          
         },
       },
       borderRadius: {
