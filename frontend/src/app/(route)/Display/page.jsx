@@ -13,7 +13,7 @@ function page() {
   const [data,setdata]=useState([])
 useEffect(()=>{
 const getData=async()=>{
-  const query = await fetch('https://jsonplaceholder.typicode.com/users')
+  const query = await fetch('http://127.0.0.1:8000/formslist')
   const resp = await query.json() 
   console.log(resp)
   setdata(resp)
@@ -31,14 +31,14 @@ getData()
       {data&& data.length&& data.map((item)=>(
 <div key={item}><Card>
   <CardHeader>
-    <CardTitle> Name: {item?.username}</CardTitle>
+    <CardTitle> Name: {item?.name}</CardTitle>
     <CardDescription>Email: {item?.email}</CardDescription>
   </CardHeader>
   <CardContent>
   Phone Number: {item?.phone}
   </CardContent>
   <CardContent>
-  Address: {item?.address?.street}
+  Address: {item?.address}
   </CardContent>
  
 </Card>
