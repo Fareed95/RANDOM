@@ -1,11 +1,25 @@
 "use client"
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from "next/navigation";
 import { Router } from "next/router";
 function page() {
     const router = useRouter();
     const directToDisplay=()=>{
         router.push('/Display')
+       
+    } 
+    const [name,setName]=useState('');
+    const [email,setEmail]=useState('');
+    const [phone,setPhone]=useState('');
+    const [address,setAddress]=useState('');
+    const adduser=async()=>{
+      let resp = await fetch('http://localhost:3000/api/users',{
+        method:"Post",
+        body:JSON.stringify({name,email,phone,address})
+        
+      })
+      resp =await resp.json();
+      console.log(resp);
     }
   return (
     <div >
@@ -17,10 +31,6 @@ function page() {
       Fill the following FORM !
     </div>
   </div>
-  
-  
-  
-  
   <section className="text-gray-600 body-font relative">
       <div className="container px-5 py-24 mx-auto">
         <div className="flex flex-col text-center w-full mb-12">
@@ -31,32 +41,32 @@ function page() {
           <div className="flex flex-wrap -m-2">
             <div className="p-2 w-full">
               <div className="relative">
-                <label htmlFor="full-name" className="leading-7 text-sm text-gray-600">Full Name</label>
-                <input type="text" id="full-name" name="full-name" className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" />
+                <label htmlFor="full-name" className="leading-7 text-sm text-gray-600" >Full Name</label>
+                <input type="text" id="full-name" name="full-name" className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" value={name} onChange={(e)=>setName(e.target.value)}/>
               </div>
             </div>
             <div className="p-2 w-full">
               <div className="relative">
                 <label htmlFor="email" className="leading-7 text-sm text-gray-600">Email</label>
-                <input type="email" id="email" name="email" className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" />
+                <input type="email" id="email" name="email" className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" value={email} onChange={(e)=>setEmail(e.target.value)} />
               </div>
             </div>
             <div className="p-2 w-full">
               <div className="relative">
                 <label htmlFor="phone" className="leading-7 text-sm text-gray-600">Phone Number</label>
-                <input type="tel" id="phone" name="phone" className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" />
+                <input type="tel" id="phone" name="phone" className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" value={phone} onChange={(e)=>setPhone(e.target.value)}/>
               </div>
             </div>
             
             <div className="p-2 w-full">
               <div className="relative">
                 <label htmlFor="experience" className="leading-7 text-sm text-gray-600">Address</label>
-                <textarea id="experience" name="experience" className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
+                <textarea id="experience" name="experience" className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out" value={address} onChange={(e)=>setAddress(e.target.value)}></textarea>
               </div>
             </div>
             
             <div className="p-2 w-full">
-              <button className="flex mx-auto text-white bg-blue-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg" >Submit</button>
+              <button className="flex mx-auto text-white bg-blue-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg" onClick={()=>adduser()}>Submit</button>
             </div>
             <div className="p-2 w-full">
               <button className="flex mx-auto text-white bg-blue-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg" onClick={()=>directToDisplay()}>Display</button>

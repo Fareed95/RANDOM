@@ -23,12 +23,7 @@ getData()
   return (
    
     <div className=' flex text-center flex-col '>
-
-
-
-
-
-      {data&& data.length&& data.map((item)=>(
+  {data&& data.length&& data.map((item)=>(
 <div key={item}><Card>
   <CardHeader>
     <CardTitle> Name: {item?.name}</CardTitle>
