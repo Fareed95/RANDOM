@@ -7,11 +7,9 @@ function FormPage() {
     const router = useRouter();
     
     const [formData, setFormData] = useState({
-        name: "",
+        username: "",
         email: "",
-        phone: "",
-        password: "",
-        Cpassword: ""
+        password: ""
     });
 
     const handleChange = (e) => {
@@ -32,7 +30,7 @@ function FormPage() {
         }
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/formslist', {
+            const response = await fetch('http://127.0.0.1:8000/users', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -57,7 +55,7 @@ function FormPage() {
         <div>
             <div className="flex items-center justify-center h-[7rem] ">
                 <div className="text-6xl font-bold bg-gradient-to-r from-blue-500 via-purple-400 to-pink-700 bg-clip-text text-transparent transition-colors duration-1000 hover:bg-gradient-to-r hover:from-blue-800 hover:via-purple-600 hover:to-pink-400 ease-in">
-                    Fill the following FORM!
+                    SIGNUP!
                 </div>
             </div>
 
@@ -72,7 +70,7 @@ function FormPage() {
                                 <div className="p-2 w-full">
                                     <div className="relative">
                                         <label htmlFor="name" className="leading-7 text-sm text-gray-600">Full Name</label>
-                                        <input type="text" id="name" name="name" className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" value={formData.name} onChange={handleChange} />
+                                        <input type="text" id="name" name="username" className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" value={formData.name} onChange={handleChange} />
                                     </div>
                                 </div>
                                 <div className="p-2 w-full">
