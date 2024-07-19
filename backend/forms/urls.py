@@ -1,10 +1,16 @@
-from django.urls import path
-from . views import index,Formslist, FormsDetailView,userlistview,UsersDetailView
+from django.urls import path, include
+from . views import index,Formslist, Userslist
+from rest_framework.routers import DefaultRouter
+
+
+router = DefaultRouter()
+router.register('formslist',Formslist,basename='forms')
+router.register('users',Userslist,basename='users')
+
+
+
 
 urlpatterns = [
     path('',index, name = "index"),
-    path('formslist', Formslist, name = "formslist"),
-    path('formslist/<int:pk>', FormsDetailView, name = "formsdetailview"),
-    path('users',userlistview),
-    path('users/<int:pk>',UsersDetailView)
+    path('',include(router.urls))
 ]
