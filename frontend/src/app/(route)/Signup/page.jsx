@@ -1,30 +1,39 @@
 "use client";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from 'react';
 
 function FormPage() {
     const router = useRouter();
-    
+    const [confirmp, setConfirmp] = useState(""); // Fixed state naming
     const [formData, setFormData] = useState({
         username: "",
         email: "",
-        password: ""
+        password: "",
+        first_name:"",
+        last_name:""
     });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
+        if (['username', 'email', 'password','last_name','first_name'].includes(name)) {
+            setFormData({
+                ...formData,
+                [name]: value
+            });
+        }
+    };
+
+    const Cpass = (e) => {
+        setConfirmp(e.target.value); // Update confirm password state
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const { password, Cpassword } = formData;
+        const { password } = formData;
 
-        if (password !== Cpassword) {
+        if (password !== confirmp) { // Use confirmp here
             alert("Passwords do not match!");
             return;
         }
@@ -37,9 +46,12 @@ function FormPage() {
                 },
                 body: JSON.stringify(formData),
             });
-
-            if (response.ok) {
+            if (formData.username == "" || formData.password == ""||formData.email == ""){
+                alert("please fill the form first")
+            }
+            else if (response.ok) {
                 console.log('Form submitted successfully!');
+                console.log(formData)
                 router.push('/Display'); // Redirect to Display page
             } else {
                 console.log('Failed to submit the form');
@@ -49,7 +61,7 @@ function FormPage() {
         }
     };
 
-    const { password, Cpassword } = formData;
+    const { password } = formData;
 
     return (
         <div>
@@ -69,8 +81,20 @@ function FormPage() {
                             <div className="flex flex-wrap -m-2">
                                 <div className="p-2 w-full">
                                     <div className="relative">
-                                        <label htmlFor="name" className="leading-7 text-sm text-gray-600">Full Name</label>
-                                        <input type="text" id="name" name="username" className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" value={formData.name} onChange={handleChange} />
+                                        <label htmlFor="username" className="leading-7 text-sm text-gray-600">User Name</label>
+                                        <input type="text" id="username" name="username" className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" value={formData.username} onChange={handleChange} />
+                                    </div>
+                                </div>
+                                <div className="p-2 w-full">
+                                    <div className="relative">
+                                        <label htmlFor="first_name" className="leading-7 text-sm text-gray-600">First Name</label>
+                                        <input type="text" id="first_name" name="first_name" className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" value={formData.first_name} onChange={handleChange} />
+                                    </div>
+                                </div>
+                                <div className="p-2 w-full">
+                                    <div className="relative">
+                                        <label htmlFor="last_name" className="leading-7 text-sm text-gray-600">Last Name</label>
+                                        <input type="text" id="last_name" name="last_name" className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" value={formData.last_name} onChange={handleChange} />
                                     </div>
                                 </div>
                                 <div className="p-2 w-full">
@@ -79,12 +103,7 @@ function FormPage() {
                                         <input type="email" id="email" name="email" className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" value={formData.email} onChange={handleChange} />
                                     </div>
                                 </div>
-                                <div className="p-2 w-full">
-                                    <div className="relative">
-                                        <label htmlFor="phone" className="leading-7 text-sm text-gray-600">Phone Number</label>
-                                        <input type="tel" id="phone" name="phone" className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" value={formData.phone} onChange={handleChange} />
-                                    </div>
-                                </div>
+                                
                                 <div className="p-2 w-full">
                                     <div className="relative">
                                         <label htmlFor="password" className="leading-7 text-sm text-gray-600">Password</label>
@@ -94,22 +113,23 @@ function FormPage() {
                                 <div className="p-2 w-full">
                                     <div className="relative">
                                         <label htmlFor="Cpassword" className="leading-7 text-sm text-gray-600">Confirm Password</label>
-                                        <input type="password" id="Cpassword" name="Cpassword" className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" value={formData.Cpassword} onChange={handleChange} />
-                                        <div className={`${password !== Cpassword ? 'text-red-700' : 'text-white'} mt-2`}>
-                                            The passwords don't match
+                                        <input type="password" id="Cpassword" name="Cpassword" className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" value={confirmp} onChange={Cpass} />
+                                        <div className={`${password !== confirmp ? 'text-red-700' : 'text-white'} mt-2`}>
+                                            {password !== confirmp && "The passwords don't match"}
                                         </div>
                                     </div>
                                 </div>
                                 <div className="flex justify-between w-full">
-                                <div className="p-2 w-full">
-                                    <button type="submit" className="flex mx-auto text-white bg-blue-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Submit</button>
-                                </div>
-                                <div className="p-2 w-full flex text-center">
-                                    <Link href={"/Login"}>
-                                     <label className="flex">Already a user?
-                                    <button className="flex mx-auto text-white bg-blue-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Login</button>
-                                    </label></Link>
-                                </div>
+                                    <div className="p-2 w-full">
+                                        <button type="submit" className="flex mx-auto text-white bg-blue-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Submit</button>
+                                    </div>
+                                    <div className="p-2 w-full flex text-center">
+                                        <Link href={"/Login"}>
+                                            <label className="flex">Already a user?
+                                                <button className="flex mx-auto text-white bg-blue-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Login</button>
+                                            </label>
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
                         </form>

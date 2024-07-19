@@ -1,8 +1,8 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
 
-function page() {
+function Page() {
     const router = useRouter();
     const [index, setIndex] = useState(null);
     const [formData, setFormData] = useState({
@@ -35,7 +35,7 @@ function page() {
     const checkData = (data) => {
         let found = false;
         data.forEach(i => {
-            if (i.username ,i.password  == formData.username,formData.password) {
+            if (i.username === formData.username && i.password === formData.password) {
                 setIndex(i.id);
                 found = true;
             }
@@ -44,16 +44,17 @@ function page() {
         if (found) {
             console.log("equal");
         } else {
-            alert("Username and password not equal");
+            alert("Username and password do not match");
         }
     };
 
     useEffect(() => {
         if (index !== null) {
-            router.push(`Main/${index}`)
-            // Perform any additional actions needed when index updates
+            router.push(`Main/${index}`);
+            // Immediately reset the index after triggering the navigation
+            setIndex(null);
         }
-    }, [index]);
+    }, [index, router]);
 
     return (
         <div>
@@ -99,4 +100,4 @@ function page() {
     );
 }
 
-export default page;
+export default Page;
