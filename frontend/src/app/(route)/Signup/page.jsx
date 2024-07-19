@@ -106,7 +106,7 @@ function FormPage() {
                                 </div>
                                 <div className="p-2 w-full flex text-center">
                                     <Link href={"/Login"}>
-                                     <label className="flex">Already a user?
+                                    <label className="flex">Already a user?
                                     <button className="flex mx-auto text-white bg-blue-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Login</button>
                                     </label></Link>
                                 </div>
