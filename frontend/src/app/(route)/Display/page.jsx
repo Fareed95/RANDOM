@@ -19,10 +19,11 @@ const [data,setdata]=useState([])
  
 useEffect(()=>{
 const getData=async()=>{
-  const query = await fetch('http://127.0.0.1:8000/formslist')
+  const query = await fetch('http://127.0.0.1:8000/users')
   const resp = await query.json() 
   // console.log(resp)
   setdata(resp)
+ 
 }
 getData()
 },[])
@@ -30,7 +31,7 @@ getData()
   const InfoPage=(a)=>{
     if(a){
     router.push(`Main/${a}`)
-  console.log("hello",a)}
+  console.log("id is",a)}
 else{
   alert("no data available")
 }
@@ -43,18 +44,13 @@ else{
     <div className=' flex text-center flex-col '>
   {data&& data.length&& data.map((item)=>(
     <div >
-<div key={item}><Card className=" hover:bg-slate-100 transition delay-150 ease-out" onClick={()=>InfoPage(item?.form_id)}>
+<div key={item.id}><Card className=" hover:bg-slate-100 transition delay-150 ease-out" onClick={()=>InfoPage(item?.id)}>
   <CardHeader>
-    <CardTitle> Name: {item?.name}</CardTitle>
-    <CardDescription>Email: {item?.email}</CardDescription>
+    <CardTitle> Name: {item?.first_name}</CardTitle>
+    <CardDescription>UserName: {item?.username}</CardDescription>
+
   </CardHeader>
-  <CardContent>
-  Phone Number: {item?.phone}
-  </CardContent>
-  <CardContent>
-  Address: {item?.address}
-  </CardContent>
- 
+  <CardContent> Email:{item?.email}</CardContent>
 </Card>
       
       <br></br></div>

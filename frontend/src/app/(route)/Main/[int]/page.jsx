@@ -5,7 +5,7 @@ function page(params) {
   const [data,setdata]=useState([])
   useEffect(()=>{
     const getData=async()=>{
-      const query = await fetch(`http://127.0.0.1:8000/formslist/${params?.params?.int}`)
+      const query = await fetch(`http://127.0.0.1:8000/users/${params?.params?.int}`)
       const resp = await query.json() 
       // console.log(resp)
       setdata(resp)
@@ -19,13 +19,16 @@ function page(params) {
       <div className="bg-white p-8 rounded shadow-md w-full max-w-sm">
         <h1 className="text-2xl font-bold mb-6 text-center">User Details</h1>
         <p className="mb-4">
-          <span className="font-semibold">Name:</span> {data?.name}
+          <span className="font-semibold">UserName:</span> {data?.username}
+        </p>
+        <p className="mb-4">
+          <span className="font-semibold">First Name:</span> {data.first_name}
+        </p>
+        <p className="mb-4">
+          <span className="font-semibold">Last Name:</span> {data?.last_name}
         </p>
         <p className="mb-4">
           <span className="font-semibold">Email:</span> {data.email}
-        </p>
-        <p className="mb-4">
-          <span className="font-semibold">Phone Number:</span> {data.phone}
         </p>
       </div>
     </div>
