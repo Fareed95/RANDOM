@@ -120,6 +120,7 @@ function FormPage() {
                                     </div>
                                 </div>
                                 <div className="flex justify-between w-full">
+
                                     <div className="p-2 w-full">
                                         <button type="submit" className="flex mx-auto text-white bg-blue-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Submit</button>
                                     </div>
@@ -130,6 +131,8 @@ function FormPage() {
                                             </label>
                                         </Link>
                                     </div>
+
+                            
                                 </div>
                             </div>
                         </form>
