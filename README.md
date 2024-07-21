@@ -7,7 +7,10 @@ ENDPOINTS :
 1. **_"formslist"_**                             #will show you json reponse of forms data.. available manipulations : GET AND POST
 2. **_"formslist/< int:pk >"_**            #will show you data of a particular id ..to get of id 1 end point will be "formslist/1" available manipulations : 
    GET, PUT AND DELETE
- 4. **_"users"_**  #will show you json response of the login users... Data it contain you directly see using this json api.. and can make signup and signin page as per the data
+ 4. **_"api/register"_**  #will require a json data to register  POST data 
+ 4. **_"api/login"_**  #will require a json data to login        POST data
+ 4. **_"api/user"_**  #will show the current logon user       GET data
+ 4. **_"api/logout"_**  #will logout user       POST data
 
 
 _TO FETCH THEIR DATA YOU MUST USE  **"GET"** request_ 
