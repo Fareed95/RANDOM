@@ -43,3 +43,9 @@ STARTUP :
 
 6. go to endpoint admin .. localhost:8000/admin and login using your super id credentials 
 7. NOW YOU CAN ACCESS ALL API's
+
+
+FOR NEW FRONTEND 
+1-`cd frontend_new`
+2-`npm run dev`
+thats it .🙂

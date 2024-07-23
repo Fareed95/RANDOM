@@ -11,18 +11,16 @@ function FormPage() {
         username: "",
         email: "",
         password: "",
-        first_name:"",
-        last_name:""
+        first_name: "",
+        last_name: ""
     });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        if (['username', 'email', 'password','last_name','first_name'].includes(name)) {
-            setFormData({
-                ...formData,
-                [name]: value
-            });
-        }
+        setFormData({
+            ...formData,
+            [name]: value
+        });
     };
 
     const Cpass = (e) => {
@@ -33,8 +31,17 @@ function FormPage() {
         e.preventDefault();
         const { password } = formData;
 
+        console.log("Form submitted");
+        console.log("Form Data:", formData);
+        console.log("Confirm Password:", confirmp);
+
         if (password !== confirmp) { // Use confirmp here
             alert("Passwords do not match!");
+            return;
+        }
+
+        if (formData.username === "" || formData.password === "" || formData.email === "") {
+            alert("Please fill the form first");
             return;
         }
 
@@ -46,15 +53,16 @@ function FormPage() {
                 },
                 body: JSON.stringify(formData),
             });
-            if (formData.username == "" || formData.password == ""||formData.email == ""){
-                alert("please fill the form first")
-            }
-            else if (response.ok) {
+
+            const responseData = await response.json();
+            console.log("Response Data:", responseData);
+
+            if (response.ok) {
                 console.log('Form submitted successfully!');
-                console.log(formData)
+                console.log(formData);
                 router.push('/Display'); // Redirect to Display page
             } else {
-                console.log('Failed to submit the form');
+                console.log('Failed to submit the form', responseData);
             }
         } catch (error) {
             console.error('Error:', error);
@@ -121,7 +129,7 @@ function FormPage() {
                                 </div>
                                 <div className="flex justify-between w-full">
 
-                                    <div className="p-2 w-full">
+                                <div className="p-2 w-full">
                                         <button type="submit" className="flex mx-auto text-white bg-blue-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Submit</button>
                                     </div>
                                     <div className="p-2 w-full flex text-center">
