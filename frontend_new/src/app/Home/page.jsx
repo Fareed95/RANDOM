@@ -1,15 +1,21 @@
-"use client"
-import React, { useEffect } from 'react';
+"use client";
+import { useEffect, useState } from 'react';
 
 function Page() {
+  const [user, setUser] = useState(null);
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const resp = await fetch("http://127.0.0.1:8000/api/user", {
+        const resp = await fetch("http://localhost:8000/api/user", {
           credentials: 'include'
         });
-        const user = await resp.json();
-        console.log(user);
+        if (resp.ok) {
+          const userData = await resp.json();
+          setUser(userData);
+        } else {
+          console.error('Failed to fetch user data');
+        }
       } catch (error) {
         console.error('Error fetching user:', error);
       }
@@ -19,8 +25,19 @@ function Page() {
   }, []);
 
   return (
-    <div>
-      home
+    <div className="flex items-center justify-center mt-[10rem]">
+      <div className="bg-slate-50 p-8 rounded-lg shadow-md w-full max-w-md">
+        {user ? (
+          <>
+            <h2 className="text-2xl font-bold mb-6 text-center">
+              Welcome, {user.name}!
+            </h2>
+            <p className="text-center text-gray-600">Email: {user.email}</p>
+          </>
+        ) : (
+          <p>Loading...</p>
+        )}
+      </div>
     </div>
   );
 }

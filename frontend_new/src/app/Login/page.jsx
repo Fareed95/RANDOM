@@ -1,6 +1,6 @@
 "use client"
-import React, { useState } from 'react';
 import { useRouter } from "next/navigation";
+import { useState } from 'react';
 
 function page() {
   const router = useRouter();
@@ -10,7 +10,7 @@ function page() {
   const submit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/login', {
+      const response = await fetch('http://localhost:8000/api/login', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: 'include', // to store cookie
