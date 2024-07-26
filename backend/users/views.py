@@ -6,23 +6,38 @@ from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed
 import jwt
 import datetime
-from . models import User
-from . serializers import UserSerializer
+from django.utils import timezone
+from .models import User
+from .serializers import UserSerializer,PasswordResetRequestSerializer,PasswordResetSerializer
+from django.core.mail import send_mail
+from django.utils.crypto import get_random_string
+from django.core.cache import cache
 
-
-# Decorator to exempt CSRF protection
-# @method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(APIView):
     @csrf_exempt
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response({'message': 'OTP sent to your email. Please verify to complete registration.'})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# @method_decorator(csrf_exempt, name='dispatch')
+    @csrf_exempt
+    def put(self, request):
+        email = request.data.get('email')
+        otp = request.data.get('otp')
+        user = User.objects.filter(email=email).first()
+
+        if user and user.otp == otp and user.otp_expiration > timezone.now():
+            user.is_active = True
+            user.otp = None
+            user.otp_expiration = None
+            user.save()
+            return Response({'message': 'User verified successfully'})
+        else:
+            return Response({'error': 'Invalid OTP or OTP expired'}, status=status.HTTP_400_BAD_REQUEST)
+
 class LoginView(APIView):
     @csrf_exempt
     def post(self, request):
@@ -36,6 +51,9 @@ class LoginView(APIView):
 
         if not user.check_password(password):
             raise AuthenticationFailed('Incorrect Password')
+
+        if not user.is_active:
+            raise AuthenticationFailed('Account not activated. Please verify your email.')
 
         payload = {
             'id': user.id,
@@ -53,28 +71,6 @@ class LoginView(APIView):
 
         return response
 
-# @method_decorator(csrf_exempt, name='dispatch')
-class UserView(APIView):
-    @csrf_exempt
-    def get(self, request):
-        token = request.COOKIES.get('jwt')
-
-        if not token:
-            raise AuthenticationFailed('Unauthenticated!')
-
-        try:
-            payload = jwt.decode(token, 'secret', algorithms="HS256")
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Token expired!')
-        except jwt.InvalidTokenError:
-            raise AuthenticationFailed('Invalid token!')
-
-        user = User.objects.filter(id=payload['id']).first()
-        serializer = UserSerializer(user)
-
-        return Response(serializer.data)
-
-# @method_decorator(csrf_exempt, name='dispatch')
 class LogoutView(APIView):
     @csrf_exempt
     def post(self, request):
@@ -84,3 +80,54 @@ class LogoutView(APIView):
             'message': "Logged out successfully"
         }
         return response
+
+
+
+# views.py
+
+
+
+class PasswordResetRequestView(APIView):
+    def post(self, request):
+        serializer = PasswordResetRequestSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data['email']
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({"error": "User with this email does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+
+        otp = get_random_string(length=6, allowed_chars='0123456789')
+        cache.set(f'otp_{email}', otp, timeout=300)  # OTP valid for 5 minutes
+
+        send_mail(
+            'Password Reset OTP',
+            f'Your OTP for password reset is {otp}.',
+            'nutriscanofficial@gmail.com',
+            [email],
+            fail_silently=False,
+        )
+        return Response({"message": "OTP sent to your email."}, status=status.HTTP_200_OK)
+
+
+class PasswordResetView(APIView):
+    def post(self, request):
+        serializer = PasswordResetSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data['email']
+        otp = serializer.validated_data['otp']
+        new_password = serializer.validated_data['new_password']
+
+        cached_otp = cache.get(f'otp_{email}')
+        if cached_otp != otp:
+            return Response({"error": "Invalid or expired OTP."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(email=email)
+            user.set_password(new_password)
+            user.save()
+            cache.delete(f'otp_{email}')
+            return Response({"message": "Password reset successful."}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({"error": "User with this email does not exist."}, status=status.HTTP_400_BAD_REQUEST)
