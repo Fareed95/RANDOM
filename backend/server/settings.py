@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'forms',
     'users',
     'rest_framework',
+    'bot'
 ]
 
 MIDDLEWARE = [

@@ -1,11 +1,7 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from . views import ResponseBotViewSet
-
-# router = DefaultRouter()
-# router.register('response',ResponseBotViewSet, basename='response' )
-
+# urls.py
+from django.urls import path
+from .views import BotResponseView
 
 urlpatterns = [
-    path('', ResponseBotViewset)
+    path('bot_response/', BotResponseView.as_view(), name='bot_response'),
 ]

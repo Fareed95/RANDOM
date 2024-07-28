@@ -1,3 +1,5 @@
-from django.test import TestCase
+import re
 
-# Create your tests here.
+a = "** my name is fareed ** you are *so good*\n *fareed* you are damn"
+cleaned_string = re.sub(r'[*\n]', '', a)
+print(cleaned_string)
