@@ -4,15 +4,16 @@ from django.core.mail import send_mail
 import random
 import datetime
 from django.utils import timezone
-
+from bot.models import BotResponse
+from bot.serializers import BotResponseSerializer
 
 class UserSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True)
     otp = serializers.CharField(write_only=True, required=False)
-
+    botresponse = BotResponseSerializer(many = True, read_only = True)
     class Meta:
         model = User
-        fields = ['name', 'email', 'password', 'confirm_password', 'otp']
+        fields = ['name', 'email', 'password', 'confirm_password', 'otp','botresponse']
         extra_kwargs = {
             'password': {'write_only': True},
         }
