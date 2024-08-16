@@ -25,8 +25,8 @@ class BotResponseView(APIView):
         # Lookup the user by email
         user = get_object_or_404(User, email=user_email)
         
-        # Generate bot response
-        bot_response_text = bot_gemini(question)
+        # Generate bot response with context
+        bot_response_text = bot_gemini(question, user.id)
         
         # Create BotResponse instance associated with the user
         bot_response = BotResponse.objects.create(question=question, bot_response=bot_response_text, user=user)
