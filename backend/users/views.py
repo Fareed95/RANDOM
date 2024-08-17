@@ -8,10 +8,19 @@ import jwt
 import datetime
 from django.utils import timezone
 from .models import User
-from .serializers import UserSerializer,PasswordResetRequestSerializer,PasswordResetSerializer
+from .serializers import UserSerializer, PasswordResetRequestSerializer, PasswordResetSerializer
 from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 from django.core.cache import cache
+from django.contrib.auth import get_user_model
+from django.conf import settings
+from social_django.utils import psa
+from social_core.exceptions import AuthException
+from django.shortcuts import redirect
+
+
+# User model
+User = get_user_model()
 
 class RegisterView(APIView):
     @csrf_exempt
@@ -81,12 +90,6 @@ class LogoutView(APIView):
         }
         return response
 
-
-
-# views.py
-
-
-
 class PasswordResetRequestView(APIView):
     def post(self, request):
         serializer = PasswordResetRequestSerializer(data=request.data)
@@ -110,7 +113,6 @@ class PasswordResetRequestView(APIView):
         )
         return Response({"message": "OTP sent to your email."}, status=status.HTTP_200_OK)
 
-
 class PasswordResetView(APIView):
     def post(self, request):
         serializer = PasswordResetSerializer(data=request.data)
@@ -131,3 +133,51 @@ class PasswordResetView(APIView):
             return Response({"message": "Password reset successful."}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({"error": "User with this email does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+
+class GoogleLoginView(APIView):
+    @csrf_exempt
+    def get(self, request):
+        # Redirect to the Google OAuth2 authorization URL
+        redirect_uri = settings.SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI
+        google_auth_url = (
+            f"https://accounts.google.com/o/oauth2/auth"
+            f"?response_type=code"
+            f"&client_id={settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY}"
+            f"&redirect_uri={redirect_uri}"
+            f"&scope=email%20profile"
+        )
+        return redirect(google_auth_url)
+
+    @csrf_exempt
+    def post(self, request):
+        token = request.data.get('token')
+        if not token:
+            return Response({"error": "No token provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # Use `psa` (social-auth-app-django) to authenticate the token
+            backend = 'social_core.backends.google.GoogleOAuth2'
+            user = psa(backend).authenticate(request, access_token=token)
+            
+            if user is None:
+                return Response({"error": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED)
+
+            if not user.is_active:
+                return Response({"error": "Account not activated"}, status=status.HTTP_401_UNAUTHORIZED)
+
+            # Generate JWT token
+            payload = {
+                'id': user.id,
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+                'iat': datetime.datetime.utcnow()
+            }
+
+            jwt_token = jwt.encode(payload, 'secret', algorithm='HS256')
+
+            response = Response()
+            response.data = {'jwt': jwt_token}
+
+            return response
+
+        except AuthException as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
