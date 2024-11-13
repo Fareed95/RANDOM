@@ -197,9 +197,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+<<<<<<< HEAD
 
 # main secdrets of the file 
 secrets.txt
 client_secret_219216437180-eetq9rn7l4he7r025t8vcdf356fhn8p7.apps.googleusercontent.com.json
 service_account.json
+
 # now let check 
